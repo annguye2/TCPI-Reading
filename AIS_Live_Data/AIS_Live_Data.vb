@@ -16,5 +16,6 @@
 
     Private Sub btnClearDir_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnClearDir.Click
         TcpIP.cleanDir("C:\AIS_Data")
+
     End Sub
 End Class
