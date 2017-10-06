@@ -28,6 +28,7 @@ Partial Class AIS_Live_Data
         Me.EndTime = New System.Windows.Forms.Label()
         Me.StartTime = New System.Windows.Forms.Label()
         Me.btnClearDir = New System.Windows.Forms.Button()
+        Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         Me.SuspendLayout()
         '
         'AIS_Read_Data_Time
@@ -72,11 +73,21 @@ Partial Class AIS_Live_Data
         Me.btnClearDir.Text = "Reset Database"
         Me.btnClearDir.UseVisualStyleBackColor = True
         '
+        'ComboBox1
+        '
+        Me.ComboBox1.FormattingEnabled = True
+        Me.ComboBox1.Items.AddRange(New Object() {"5", "10", "15", "20", "25", "30"})
+        Me.ComboBox1.Location = New System.Drawing.Point(190, 22)
+        Me.ComboBox1.Name = "ComboBox1"
+        Me.ComboBox1.Size = New System.Drawing.Size(121, 21)
+        Me.ComboBox1.TabIndex = 6
+        '
         'AIS_Live_Data
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(469, 262)
+        Me.Controls.Add(Me.ComboBox1)
         Me.Controls.Add(Me.btnClearDir)
         Me.Controls.Add(Me.EndTime)
         Me.Controls.Add(Me.StartTime)
@@ -93,5 +104,6 @@ Partial Class AIS_Live_Data
     Friend WithEvents EndTime As System.Windows.Forms.Label
     Friend WithEvents StartTime As System.Windows.Forms.Label
     Friend WithEvents btnClearDir As System.Windows.Forms.Button
+    Friend WithEvents ComboBox1 As System.Windows.Forms.ComboBox
 
 End Class
