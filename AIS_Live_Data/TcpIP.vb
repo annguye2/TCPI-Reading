@@ -71,6 +71,8 @@ Public Class TcpIP
         client.Close()
         BuildCSVData()
     End Sub 'Connect
+
+
     Public Sub WriteToTextFile(ByRef AisString)
         Try
             Using writer As StreamWriter = New StreamWriter(PathStr, True)
@@ -103,7 +105,6 @@ Public Class TcpIP
             Dim ArcPyProc As New System.Diagnostics.Process()
             ArcPyProc = Process.Start("C:\Python27\ArcGIS10.3\python.exe", "C:\AIS_Py\xCsvToTable.py")
 
-
             MsgBox("Processing is done!!")
         Catch ex As Exception
             Console.Write(ex.Message)
@@ -111,27 +112,24 @@ Public Class TcpIP
     End Sub
 
 
-    
     Public Sub cleanDir(ByVal aisData)
         'Remove all file in data
         For Each deleteFile In Directory.GetFiles(aisData, "*.*", SearchOption.TopDirectoryOnly)
             File.Delete(deleteFile)
         Next
 
+        'Remove gdb
         Dim path As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & aisData
         System.IO.Directory.Delete(aisData & "\ais.gdb", True)
 
     End Sub
+
     Public Sub deleteSchemaIni()
         Dim FileToDelete As String
-
         FileToDelete = "C:\AIS_Data\schema.ini"
-
         If System.IO.File.Exists(FileToDelete) = True Then
-
             System.IO.File.Delete(FileToDelete)
             MsgBox("File Deleted")
-
         End If
     End Sub
 
@@ -150,4 +148,26 @@ Public Class TcpIP
 
         End Using
     End Sub
+
+
+    Public Sub xConnect()
+        AIS_Read_Data_Time.Start() 'Timer stops functioning
+        Dim server = "10.200.76.54"
+        Dim port As Int32 = 31414
+        Dim client As New TcpClient(server, port)
+        Dim data As [Byte]() = System.Text.Encoding.ASCII.GetBytes(Message)
+        Dim stream As NetworkStream = client.GetStream()
+        stream.Write(data, 0, data.Length)
+        Console.WriteLine("Sent: {0}", Message)
+        ' Receive the TcpServer.response.
+        ' Buffer to store the response bytes.
+        data = New [Byte](256) {}
+        ' String to store the response ASCII representation.
+        Dim responseData As [String] = [String].Empty
+        second = 0
+        Dim bytes As Int32 = stream.Read(data, 0, data.Length)
+        responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes)
+        ' Console.WriteLine("Received: {0}", responseData)
+        WriteToTextFile(responseData)
+    End Sub 'Connect
 End Class

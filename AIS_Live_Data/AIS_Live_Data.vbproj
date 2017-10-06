@@ -95,6 +95,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="TcpIP.vb" />
+    <Compile Include="xTcpIP.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AIS_Live_Data.resx">

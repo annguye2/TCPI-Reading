@@ -29,6 +29,12 @@ Partial Class AIS_Live_Data
         Me.StartTime = New System.Windows.Forms.Label()
         Me.btnClearDir = New System.Windows.Forms.Button()
         Me.ComboBox1 = New System.Windows.Forms.ComboBox()
+        Me.btnStart = New System.Windows.Forms.Button()
+        Me.lblElapsed = New System.Windows.Forms.Label()
+        Me.btnStop = New System.Windows.Forms.Button()
+        Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'AIS_Read_Data_Time
@@ -82,11 +88,64 @@ Partial Class AIS_Live_Data
         Me.ComboBox1.Size = New System.Drawing.Size(121, 21)
         Me.ComboBox1.TabIndex = 6
         '
+        'btnStart
+        '
+        Me.btnStart.Location = New System.Drawing.Point(185, 307)
+        Me.btnStart.Name = "btnStart"
+        Me.btnStart.Size = New System.Drawing.Size(75, 23)
+        Me.btnStart.TabIndex = 7
+        Me.btnStart.Text = "Start"
+        Me.btnStart.UseVisualStyleBackColor = True
+        '
+        'lblElapsed
+        '
+        Me.lblElapsed.AutoSize = True
+        Me.lblElapsed.Location = New System.Drawing.Point(168, 436)
+        Me.lblElapsed.Name = "lblElapsed"
+        Me.lblElapsed.Size = New System.Drawing.Size(74, 13)
+        Me.lblElapsed.TabIndex = 8
+        Me.lblElapsed.Text = "Elapsed Time:"
+        '
+        'btnStop
+        '
+        Me.btnStop.Location = New System.Drawing.Point(185, 366)
+        Me.btnStop.Name = "btnStop"
+        Me.btnStop.Size = New System.Drawing.Size(75, 23)
+        Me.btnStop.TabIndex = 9
+        Me.btnStop.Text = "Stop"
+        Me.btnStop.UseVisualStyleBackColor = True
+        '
+        'BackgroundWorker1
+        '
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(353, 376)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(39, 13)
+        Me.Label2.TabIndex = 11
+        Me.Label2.Text = "Label2"
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(353, 312)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(39, 13)
+        Me.Label1.TabIndex = 10
+        Me.Label1.Text = "Label1"
+        '
         'AIS_Live_Data
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(469, 262)
+        Me.ClientSize = New System.Drawing.Size(824, 483)
+        Me.Controls.Add(Me.Label2)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.btnStop)
+        Me.Controls.Add(Me.lblElapsed)
+        Me.Controls.Add(Me.btnStart)
         Me.Controls.Add(Me.ComboBox1)
         Me.Controls.Add(Me.btnClearDir)
         Me.Controls.Add(Me.EndTime)
@@ -105,5 +164,11 @@ Partial Class AIS_Live_Data
     Friend WithEvents StartTime As System.Windows.Forms.Label
     Friend WithEvents btnClearDir As System.Windows.Forms.Button
     Friend WithEvents ComboBox1 As System.Windows.Forms.ComboBox
+    Friend WithEvents btnStart As System.Windows.Forms.Button
+    Friend WithEvents lblElapsed As System.Windows.Forms.Label
+    Friend WithEvents btnStop As System.Windows.Forms.Button
+    Friend WithEvents BackgroundWorker1 As System.ComponentModel.BackgroundWorker
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents Label1 As System.Windows.Forms.Label
 
 End Class
