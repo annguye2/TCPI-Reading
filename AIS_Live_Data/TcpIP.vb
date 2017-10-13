@@ -16,25 +16,63 @@ Public Class TcpIP
     Dim Message = "Read Data From AIS"
     Dim AIS_Read_Data_Time As System.Windows.Forms.Timer
 
+
     Public Sub New(ByVal _AIS_Read_Data_Time As System.Windows.Forms.Timer, ByVal _PathStr As String)
         ' Initialize with a specific course in mind
         PathStr = ""
         PathStr = _PathStr
         AIS_Read_Data_Time = _AIS_Read_Data_Time
     End Sub
+
     Public Sub New()
         ' Initialize without a course
     End Sub
 
-    Public Sub DisplayPathStr()
-        MsgBox(PathStr)
+  
 
-    End Sub
+    'Public Sub Connect() 'Everything worked justa  backup
+    '    AIS_Read_Data_Time.Start() 'Timer stops functioning
+    '    ' StartTime.Text = DateTime.Now.ToString
+    '    ' combination.
+    '    'Dim server = "10.200.76.54"
+    '    'Dim port As Int32 = 31414
+    '    'Dim client As New TcpClient(server, port)
+    '    ' '' Translate the passed message into ASCII and store it as a Byte array.
+    '    'Dim data As [Byte]() = System.Text.Encoding.ASCII.GetBytes(Message)
+    '    '' Get a client stream for reading and writing.
+    '    '' Stream stream = client.GetStream();
+    '    'Dim stream As NetworkStream = client.GetStream()
+    '    '' Send the message to the connected TcpServer. 
+    '    stream.Write(data, 0, data.Length)
+    '    Console.WriteLine("Sent: {0}", Message)
+    '    ' Receive the TcpServer.response.
+    '    ' Buffer to store the response bytes.
+    '    data = New [Byte](256) {}
+
+    '    ' String to store the response ASCII representation.
+    '    Dim responseData As [String] = [String].Empty
+    '    second = 0
+    '    Console.WriteLine("Start reading and writing data")
+    '    While (second <= AIS_Read_Data_Time.Interval)
+    '        second = second + 1
+    '        count += 1
+    '        Dim bytes As Int32 = stream.Read(data, 0, data.Length)
+    '        responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes)
+    '        ' Console.WriteLine("Received: {0}", responseData)
+    '        WriteToTextFile(responseData)
+
+    '    End While
+
+    '    AIS_Read_Data_Time.Stop() 'Timer stops functioning
+    '    Console.WriteLine("Stop reading and writing data")
+    '    count = 0
+    '    stream.Close()
+    '    client.Close()
+    '    BuildCSVData()
+    'End Sub 'Connect
 
     Public Sub Connect()
-        AIS_Read_Data_Time.Start() 'Timer stops functioning
-        ' StartTime.Text = DateTime.Now.ToString
-        ' combination.
+
         Dim server = "10.200.76.54"
         Dim port As Int32 = 31414
         Dim client As New TcpClient(server, port)
@@ -44,10 +82,10 @@ Public Class TcpIP
         ' Stream stream = client.GetStream();
         Dim stream As NetworkStream = client.GetStream()
         ' Send the message to the connected TcpServer. 
+        ' Send the message to the connected TcpServer. 
+        AIS_Read_Data_Time.Start() 'Timer stops functioning
         stream.Write(data, 0, data.Length)
         Console.WriteLine("Sent: {0}", Message)
-        ' Receive the TcpServer.response.
-        ' Buffer to store the response bytes.
         data = New [Byte](256) {}
 
         ' String to store the response ASCII representation.
@@ -89,7 +127,7 @@ Public Class TcpIP
             Console.WriteLine("Start building CSV ais_live_data.csv")
             Dim dir As String = "C:\AIS_Miner"
             Directory.SetCurrentDirectory(dir)
-            Console.WriteLine("Change current directory to AIS app locationo to get full details data: ")
+            Console.WriteLine("Change current directory to AIS app location to get full details data: ")
             Console.Write(Directory.GetCurrentDirectory)
             proc = Process.Start("C:\AIS_Miner\AISMiner.exe", "-i C:\AIS_Data\ais_live_data.log -o C:\AIS_Data\ais_live.csv -m 0")
 
@@ -105,24 +143,14 @@ Public Class TcpIP
             Dim ArcPyProc As New System.Diagnostics.Process()
             ArcPyProc = Process.Start("C:\Python27\ArcGIS10.3\python.exe", "C:\AIS_Py\xCsvToTable.py")
 
-            MsgBox("Processing is done!!")
+            'MsgBox("Processing is done!!")
         Catch ex As Exception
             Console.Write(ex.Message)
         End Try
     End Sub
 
 
-    Public Sub cleanDir(ByVal aisData)
-        'Remove all file in data
-        For Each deleteFile In Directory.GetFiles(aisData, "*.*", SearchOption.TopDirectoryOnly)
-            File.Delete(deleteFile)
-        Next
-
-        'Remove gdb
-        Dim path As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & aisData
-        System.IO.Directory.Delete(aisData & "\ais.gdb", True)
-
-    End Sub
+  
 
     Public Sub deleteSchemaIni()
         Dim FileToDelete As String
@@ -151,12 +179,15 @@ Public Class TcpIP
 
 
     Public Sub xConnect()
-        AIS_Read_Data_Time.Start() 'Timer stops functioning
+
         Dim server = "10.200.76.54"
         Dim port As Int32 = 31414
         Dim client As New TcpClient(server, port)
         Dim data As [Byte]() = System.Text.Encoding.ASCII.GetBytes(Message)
         Dim stream As NetworkStream = client.GetStream()
+
+
+        client.SendBufferSize = 6550000
         stream.Write(data, 0, data.Length)
         Console.WriteLine("Sent: {0}", Message)
         ' Receive the TcpServer.response.
@@ -170,4 +201,6 @@ Public Class TcpIP
         ' Console.WriteLine("Received: {0}", responseData)
         WriteToTextFile(responseData)
     End Sub 'Connect
+
+   
 End Class

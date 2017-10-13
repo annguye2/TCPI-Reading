@@ -1,9 +1,12 @@
-﻿Public Class AIS_Live_Data
+﻿Imports System.Windows.Forms
+Imports System.IO
+
+Public Class AIS_Live_Data
     Dim TcpIP As TcpIP
 
     Dim dataDir
     Dim xTcpIP As xTcpIP
-   
+
 
     Dim start_time As DateTime
     Dim stop_time As DateTime
@@ -12,14 +15,18 @@
 
     Private Sub AIS_Live_Data_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         TcpIP = New TcpIP(AIS_Read_Data_Time, "C:\AIS_Data\ais_live_data.log")
-        xTcpIP = New xTcpIP("C:\AIS_Data\ais_live_data.log")
-        TcpIP.cleanDir("C:\AIS_Data")
-    
+        'xTcpIP = New xTcpIP("C:\AIS_Data\ais_live_data.log")
+        cleanDir("C:\AIS_Data")
+
 
     End Sub
 
     Private Sub CollectDataBtn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CollectDataBtn.Click
         'delete schema...
+
+        'TcpIP = New TcpIP(AIS_Read_Data_Time, "C:\AIS_Data\ais_live_data.log")
+        'xTcpIP = New xTcpIP("C:\AIS_Data\ais_live_data.log")
+
         TcpIP.deleteSchemaIni()
         StartTime.Text = DateTime.Now.ToString
         TcpIP.Connect()
@@ -29,13 +36,14 @@
 
     Private Sub btnClearDir_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnClearDir.Click
         'Clean up old data 
-        TcpIP.cleanDir("C:\AIS_Data")
+        CleanDir("C:\AIS_Data")
 
     End Sub
 
 
     Private Sub btnStart_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnStart.Click
-
+        xTcpIP = New xTcpIP("C:\AIS_Data\ais_live_data.log")
+        CleanDir("C:\AIS_Data")
         btnStart.Enabled = False
         btnStop.Enabled = True
 
@@ -53,7 +61,7 @@
     Private Sub btnStop_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnStop.Click
         stop_time = Now
         elapsed_time = stop_time.Subtract(start_time)
-        lblElapsed.Text = elapsed_time.TotalSeconds.ToString("0.000000")
+        lblElapsed.Text = elapsed_time.TotalSeconds.ToString("0")
         btnStop.Enabled = False
         BackgroundWorker1.CancelAsync()
         TcpIP.BuildCSVData()
@@ -66,34 +74,29 @@
         '' The asynchronous task you want to perform goes here
         '' the following is an example of how it typically goes.
 
-        'Const Max As Integer = 1000
+        Const Max As Integer = 10000
 
-        'For i = 1 To Max
-        '    '' do something
-        '    '' (I put a sleep to simulate time consumed)
-        '    Threading.Thread.Sleep(100)
+        For i = 1 To Max
+            '' do something
+            '' (I put a sleep to simulate time consumed)
+            '' Threading.Thread.Sleep(100)
 
-        '    '' report progress at regular intervals
-        '    BackgroundWorker1.ReportProgress(CInt(100 * i / Max), "Running..." & i.ToString)
+            '' report progress at regular intervals
+            ' BackgroundWorker1.ReportProgress(CInt(100 * i / Max), "Collecting ... ") '
 
-        '    '' check at regular intervals for CancellationPending
-        '    If BackgroundWorker1.CancellationPending Then
-        '        BackgroundWorker1.ReportProgress(CInt(100 * i / Max), "Cancelling...")
-        '        Exit For
-        '    End If
-        '    Dim count As Integer = 0
-        '    While (BackgroundWorker1.CancellationPending = False)
-        '        xTcpIP.xConnect()
-        '    End While
-        'Next
 
-        While (Not BackgroundWorker1.CancellationPending)
+            '' check at regular intervals for CancellationPending
+            If BackgroundWorker1.CancellationPending Then
+                'BackgroundWorker1.ReportProgress(CInt(100 * i / Max), "Cancelling...")
+                Exit For
+            End If
+            
             xTcpIP.xConnect()
 
 
-        End While
 
-
+        Next
+       
         '' any cleanup code go here
         '' ensure that you close all open resources before exitting out of this Method.
         '' try to skip off whatever is not desperately necessary if CancellationPending is True
@@ -102,6 +105,7 @@
         If BackgroundWorker1.CancellationPending Then
             e.Cancel = True
             BackgroundWorker1.ReportProgress(100, "Completed.")
+              xTcpIP.CloseConnection()
         End If
     End Sub
 
@@ -124,7 +128,7 @@
 
         ElseIf e.Cancelled Then
             '' otherwise if it was cancelled
-            MessageBox.Show("Complete Collecting Data!")
+            ''MessageBox.Show("Complete Collecting Data!")
             Label1.Text = "Complete Collecting Data!"
 
         Else
@@ -139,4 +143,30 @@
 
 
 
+
+    Private Sub Close_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Close.Click
+        Try
+            Me.Dispose()
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+
+
+    Public Sub CleanDir(ByVal aisData)
+        'Remove all file in data
+        For Each deleteFile In Directory.GetFiles(aisData, "*.*", SearchOption.TopDirectoryOnly)
+            File.Delete(deleteFile)
+        Next
+
+        'Remove gdb
+        'Dim path As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & aisData
+        If Directory.Exists(aisData & "\ais.gdb") Then
+            System.IO.Directory.Delete(aisData & "\ais.gdb", True)
+        End If
+
+
+    End Sub
 End Class

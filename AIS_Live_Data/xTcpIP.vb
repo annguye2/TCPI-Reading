@@ -10,8 +10,6 @@ Public Class xTcpIP
     Dim clientSocket As New System.Net.Sockets.TcpClient()
     Dim serverStream As NetworkStream
      
-
-
     Dim Message = "Read Data From AIS"
 
 
@@ -29,9 +27,9 @@ Public Class xTcpIP
 
 
     Public Sub xConnect()
+
         'set buffer size. if this buffer is full the process of reading will stop and the app will be hang
         client.SendBufferSize = 6550000
-
         stream.Write(data, 0, data.Length)
         ' Receive the TcpServer.response.
         ' Buffer to store the response bytes.
@@ -55,6 +53,13 @@ Public Class xTcpIP
             Console.Write("File doesn't exist")
         End Try
     End Sub
+    Public Sub CloseConnection()
+        Try
+            stream.Close()
+            client.Close()
+        Catch ex As Exception
 
+        End Try
+    End Sub
 
 End Class
