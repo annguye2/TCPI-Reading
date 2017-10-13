@@ -10,23 +10,20 @@ Public Class AIS_Live_Data
 
     Dim start_time As DateTime
     Dim stop_time As DateTime
+    Dim curr_time As DateTime
     Dim elapsed_time As TimeSpan
 
 
     Private Sub AIS_Live_Data_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         TcpIP = New TcpIP(AIS_Read_Data_Time, "C:\AIS_Data\ais_live_data.log")
-        'xTcpIP = New xTcpIP("C:\AIS_Data\ais_live_data.log")
+
         cleanDir("C:\AIS_Data")
 
 
     End Sub
 
     Private Sub CollectDataBtn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CollectDataBtn.Click
-        'delete schema...
-
-        'TcpIP = New TcpIP(AIS_Read_Data_Time, "C:\AIS_Data\ais_live_data.log")
-        'xTcpIP = New xTcpIP("C:\AIS_Data\ais_live_data.log")
-
+  
         TcpIP.deleteSchemaIni()
         StartTime.Text = DateTime.Now.ToString
         TcpIP.Connect()
@@ -56,12 +53,15 @@ Public Class AIS_Live_Data
         BackgroundWorker1.RunWorkerAsync()
         start_time = Now
 
+        elapsed_time = stop_time.Subtract(start_time)
+        lblElapsed.Text = "Elapsed time: " & "0.0" & " seconds"
+        lblStartTime.Text = "Start time: " & Now.ToString
     End Sub
 
     Private Sub btnStop_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnStop.Click
         stop_time = Now
         elapsed_time = stop_time.Subtract(start_time)
-        lblElapsed.Text = elapsed_time.TotalSeconds.ToString("0")
+        lblElapsed.Text = "Elapsed time: " & elapsed_time.TotalSeconds.ToString("0.0") & " seconds"
         btnStop.Enabled = False
         BackgroundWorker1.CancelAsync()
         TcpIP.BuildCSVData()
@@ -77,26 +77,16 @@ Public Class AIS_Live_Data
         Const Max As Integer = 10000
 
         For i = 1 To Max
-            '' do something
-            '' (I put a sleep to simulate time consumed)
-            '' Threading.Thread.Sleep(100)
-
-            '' report progress at regular intervals
-            ' BackgroundWorker1.ReportProgress(CInt(100 * i / Max), "Collecting ... ") '
-
-
+            BackgroundWorker1.ReportProgress(CInt(100 * i / Max), "Collecting .... ") '
             '' check at regular intervals for CancellationPending
             If BackgroundWorker1.CancellationPending Then
-                'BackgroundWorker1.ReportProgress(CInt(100 * i / Max), "Cancelling...")
+                BackgroundWorker1.ReportProgress(CInt(100 * i / Max), "Stop")
                 Exit For
             End If
-            
             xTcpIP.xConnect()
 
-
-
         Next
-       
+
         '' any cleanup code go here
         '' ensure that you close all open resources before exitting out of this Method.
         '' try to skip off whatever is not desperately necessary if CancellationPending is True
@@ -105,15 +95,16 @@ Public Class AIS_Live_Data
         If BackgroundWorker1.CancellationPending Then
             e.Cancel = True
             BackgroundWorker1.ReportProgress(100, "Completed.")
-              xTcpIP.CloseConnection()
+            xTcpIP.CloseConnection()
+
         End If
     End Sub
 
     Private Sub BackgroundWorker1_ProgressChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ProgressChangedEventArgs) Handles BackgroundWorker1.ProgressChanged
         '' This event is fired when you call the ReportProgress method from inside your DoWork.
         '' Any visual indicators about the progress should go here.
-        Label1.Text = CType(e.UserState, String)
-        Label2.Text = e.ProgressPercentage.ToString & "% complete."
+        lblProcessing.Text = CType(e.UserState, String)
+        lblCurrentTime.Text = "Current time: " & Now.ToString()
     End Sub
 
     Private Sub BackgroundWorker1_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
@@ -124,21 +115,22 @@ Public Class AIS_Live_Data
         If e.Error IsNot Nothing Then
             '' if BackgroundWorker terminated due to error
             MessageBox.Show(e.Error.Message)
-            Label1.Text = "Error occurred!"
+            lblProcessing.Text = "Error occurred!"
 
         ElseIf e.Cancelled Then
             '' otherwise if it was cancelled
             ''MessageBox.Show("Complete Collecting Data!")
-            Label1.Text = "Complete Collecting Data!"
+            lblProcessing.Text = "Complete Collecting Data!"
 
         Else
             '' otherwise it completed normally
             MessageBox.Show("Task completed!")
-            Label1.Text = "Error completed!"
+            lblProcessing.Text = "Error completed!"
         End If
 
         btnStart.Enabled = True
         btnStop.Enabled = False
+        lblCurrentTime.Text = "End time: " & Now.ToString()
     End Sub
 
 
@@ -169,4 +161,6 @@ Public Class AIS_Live_Data
 
 
     End Sub
+
+   
 End Class

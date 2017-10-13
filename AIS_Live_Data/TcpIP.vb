@@ -12,7 +12,6 @@ Public Class TcpIP
     Dim aTimer As System.Timers.Timer
     Dim second As Integer
     Dim count As Integer = 0
-
     Dim Message = "Read Data From AIS"
     Dim AIS_Read_Data_Time As System.Windows.Forms.Timer
 
@@ -28,7 +27,7 @@ Public Class TcpIP
         ' Initialize without a course
     End Sub
 
-  
+
 
     'Public Sub Connect() 'Everything worked justa  backup
     '    AIS_Read_Data_Time.Start() 'Timer stops functioning
@@ -149,9 +148,6 @@ Public Class TcpIP
         End Try
     End Sub
 
-
-  
-
     Public Sub deleteSchemaIni()
         Dim FileToDelete As String
         FileToDelete = "C:\AIS_Data\schema.ini"
@@ -160,7 +156,6 @@ Public Class TcpIP
             MsgBox("File Deleted")
         End If
     End Sub
-
 
     Public Sub AppendDataToFile(ByRef AisString)
         Dim filePath As String = String.Format("C:\AIS_Data\appending.log")
@@ -176,7 +171,6 @@ Public Class TcpIP
 
         End Using
     End Sub
-
 
     Public Sub xConnect()
 
@@ -202,5 +196,5 @@ Public Class TcpIP
         WriteToTextFile(responseData)
     End Sub 'Connect
 
-   
+
 End Class

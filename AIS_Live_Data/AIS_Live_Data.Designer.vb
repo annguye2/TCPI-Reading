@@ -34,16 +34,26 @@ Partial Class AIS_Live_Data
         Me.lblElapsed = New System.Windows.Forms.Label()
         Me.btnStop = New System.Windows.Forms.Button()
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.lblCurrentTime = New System.Windows.Forms.Label()
+        Me.lblProcessing = New System.Windows.Forms.Label()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.lblStartTime = New System.Windows.Forms.Label()
         Me.Close = New System.Windows.Forms.Button()
         Me.Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
+        '
+        'Label4
+        '
+        Label4.AutoSize = True
+        Label4.Location = New System.Drawing.Point(491, 15)
+        Label4.Name = "Label4"
+        Label4.Size = New System.Drawing.Size(155, 13)
+        Label4.TabIndex = 12
+        Label4.Text = "Collecting data on time demand"
         '
         'AIS_Read_Data_Time
         '
@@ -65,18 +75,18 @@ Partial Class AIS_Live_Data
         Me.EndTime.AutoSize = True
         Me.EndTime.Location = New System.Drawing.Point(186, 160)
         Me.EndTime.Name = "EndTime"
-        Me.EndTime.Size = New System.Drawing.Size(55, 13)
+        Me.EndTime.Size = New System.Drawing.Size(51, 13)
         Me.EndTime.TabIndex = 4
-        Me.EndTime.Text = "End Time:"
+        Me.EndTime.Text = "End time:"
         '
         'StartTime
         '
         Me.StartTime.AutoSize = True
         Me.StartTime.Location = New System.Drawing.Point(183, 110)
         Me.StartTime.Name = "StartTime"
-        Me.StartTime.Size = New System.Drawing.Size(58, 13)
+        Me.StartTime.Size = New System.Drawing.Size(54, 13)
         Me.StartTime.TabIndex = 3
-        Me.StartTime.Text = "Start Time:"
+        Me.StartTime.Text = "Start time:"
         '
         'btnClearDir
         '
@@ -108,15 +118,15 @@ Partial Class AIS_Live_Data
         'lblElapsed
         '
         Me.lblElapsed.AutoSize = True
-        Me.lblElapsed.Location = New System.Drawing.Point(24, 155)
+        Me.lblElapsed.Location = New System.Drawing.Point(24, 165)
         Me.lblElapsed.Name = "lblElapsed"
-        Me.lblElapsed.Size = New System.Drawing.Size(74, 13)
+        Me.lblElapsed.Size = New System.Drawing.Size(70, 13)
         Me.lblElapsed.TabIndex = 8
-        Me.lblElapsed.Text = "Elapsed Time:"
+        Me.lblElapsed.Text = "Elapsed time:"
         '
         'btnStop
         '
-        Me.btnStop.Location = New System.Drawing.Point(17, 91)
+        Me.btnStop.Location = New System.Drawing.Point(17, 105)
         Me.btnStop.Name = "btnStop"
         Me.btnStop.Size = New System.Drawing.Size(75, 23)
         Me.btnStop.TabIndex = 9
@@ -126,23 +136,23 @@ Partial Class AIS_Live_Data
         'BackgroundWorker1
         '
         '
-        'Label2
+        'lblCurrentTime
         '
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(176, 101)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(39, 13)
-        Me.Label2.TabIndex = 11
-        Me.Label2.Text = "Label2"
+        Me.lblCurrentTime.AutoSize = True
+        Me.lblCurrentTime.Location = New System.Drawing.Point(141, 110)
+        Me.lblCurrentTime.Name = "lblCurrentTime"
+        Me.lblCurrentTime.Size = New System.Drawing.Size(69, 13)
+        Me.lblCurrentTime.TabIndex = 11
+        Me.lblCurrentTime.Text = "Current time: "
         '
-        'Label1
+        'lblProcessing
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(176, 43)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(39, 13)
-        Me.Label1.TabIndex = 10
-        Me.Label1.Text = "Label1"
+        Me.lblProcessing.AutoSize = True
+        Me.lblProcessing.Location = New System.Drawing.Point(141, 81)
+        Me.lblProcessing.Name = "lblProcessing"
+        Me.lblProcessing.Size = New System.Drawing.Size(50, 13)
+        Me.lblProcessing.TabIndex = 10
+        Me.lblProcessing.Text = "Message"
         '
         'Panel1
         '
@@ -162,15 +172,25 @@ Partial Class AIS_Live_Data
         '
         Me.Panel2.BackColor = System.Drawing.SystemColors.ButtonHighlight
         Me.Panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        Me.Panel2.Controls.Add(Me.lblStartTime)
         Me.Panel2.Controls.Add(Me.btnStart)
         Me.Panel2.Controls.Add(Me.btnStop)
         Me.Panel2.Controls.Add(Me.lblElapsed)
-        Me.Panel2.Controls.Add(Me.Label2)
-        Me.Panel2.Controls.Add(Me.Label1)
+        Me.Panel2.Controls.Add(Me.lblCurrentTime)
+        Me.Panel2.Controls.Add(Me.lblProcessing)
         Me.Panel2.Location = New System.Drawing.Point(398, 37)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(395, 203)
+        Me.Panel2.Size = New System.Drawing.Size(363, 203)
         Me.Panel2.TabIndex = 13
+        '
+        'lblStartTime
+        '
+        Me.lblStartTime.AutoSize = True
+        Me.lblStartTime.Location = New System.Drawing.Point(141, 43)
+        Me.lblStartTime.Name = "lblStartTime"
+        Me.lblStartTime.Size = New System.Drawing.Size(57, 13)
+        Me.lblStartTime.TabIndex = 12
+        Me.lblStartTime.Text = "Start time: "
         '
         'Close
         '
@@ -190,20 +210,13 @@ Partial Class AIS_Live_Data
         Me.Label3.TabIndex = 7
         Me.Label3.Text = "Collect data on selected interval time in seconds"
         '
-        'Label4
-        '
-        Label4.AutoSize = True
-        Label4.Location = New System.Drawing.Point(491, 15)
-        Label4.Name = "Label4"
-        Label4.Size = New System.Drawing.Size(155, 13)
-        Label4.TabIndex = 12
-        Label4.Text = "Collecting data on time demand"
-        '
         'AIS_Live_Data
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(824, 291)
+        Me.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.ClientSize = New System.Drawing.Size(783, 291)
+        Me.ControlBox = False
         Me.Controls.Add(Label4)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Close)
@@ -230,11 +243,12 @@ Partial Class AIS_Live_Data
     Friend WithEvents lblElapsed As System.Windows.Forms.Label
     Friend WithEvents btnStop As System.Windows.Forms.Button
     Friend WithEvents BackgroundWorker1 As System.ComponentModel.BackgroundWorker
-    Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents lblCurrentTime As System.Windows.Forms.Label
+    Friend WithEvents lblProcessing As System.Windows.Forms.Label
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents Panel2 As System.Windows.Forms.Panel
     Friend WithEvents Close As System.Windows.Forms.Button
     Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents lblStartTime As System.Windows.Forms.Label
 
 End Class
