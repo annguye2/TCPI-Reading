@@ -16,9 +16,8 @@ Public Class AIS_Live_Data
 
     Private Sub AIS_Live_Data_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         TcpIP = New TcpIP(AIS_Read_Data_Time, "C:\AIS_Data\ais_live_data.log")
-
-        cleanDir("C:\AIS_Data")
-
+        CleanDir("C:\AIS_Data")
+        SelectTime.SelectedIndex = 0
 
     End Sub
 
@@ -40,7 +39,7 @@ Public Class AIS_Live_Data
 
     Private Sub btnStart_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnStart.Click
         xTcpIP = New xTcpIP("C:\AIS_Data\ais_live_data.log")
-        CleanDir("C:\AIS_Data")
+        TcpIP.deleteSchemaIni()
         btnStart.Enabled = False
         btnStop.Enabled = True
 
@@ -64,7 +63,8 @@ Public Class AIS_Live_Data
         lblElapsed.Text = "Elapsed time: " & elapsed_time.TotalSeconds.ToString("0.0") & " seconds"
         btnStop.Enabled = False
         BackgroundWorker1.CancelAsync()
-        TcpIP.BuildCSVData()
+        xTcpIP.BuildCSVData()
+        xTcpIP.CreatingFeatureClass()
 
 
     End Sub
@@ -75,7 +75,6 @@ Public Class AIS_Live_Data
         '' the following is an example of how it typically goes.
 
         Const Max As Integer = 10000
-
         For i = 1 To Max
             BackgroundWorker1.ReportProgress(CInt(100 * i / Max), "Collecting .... ") '
             '' check at regular intervals for CancellationPending
@@ -84,7 +83,6 @@ Public Class AIS_Live_Data
                 Exit For
             End If
             xTcpIP.xConnect()
-
         Next
 
         '' any cleanup code go here
@@ -96,7 +94,6 @@ Public Class AIS_Live_Data
             e.Cancel = True
             BackgroundWorker1.ReportProgress(100, "Completed.")
             xTcpIP.CloseConnection()
-
         End If
     End Sub
 
@@ -163,4 +160,7 @@ Public Class AIS_Live_Data
     End Sub
 
    
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+
+    End Sub
 End Class

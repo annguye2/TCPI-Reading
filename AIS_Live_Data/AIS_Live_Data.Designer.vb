@@ -25,86 +25,51 @@ Partial Class AIS_Live_Data
         Me.components = New System.ComponentModel.Container()
         Dim Label4 As System.Windows.Forms.Label
         Me.AIS_Read_Data_Time = New System.Windows.Forms.Timer(Me.components)
-        Me.CollectDataBtn = New System.Windows.Forms.Button()
-        Me.EndTime = New System.Windows.Forms.Label()
-        Me.StartTime = New System.Windows.Forms.Label()
         Me.btnClearDir = New System.Windows.Forms.Button()
-        Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         Me.btnStart = New System.Windows.Forms.Button()
         Me.lblElapsed = New System.Windows.Forms.Label()
         Me.btnStop = New System.Windows.Forms.Button()
         Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
         Me.lblCurrentTime = New System.Windows.Forms.Label()
         Me.lblProcessing = New System.Windows.Forms.Label()
-        Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.lblStartTime = New System.Windows.Forms.Label()
         Me.Close = New System.Windows.Forms.Button()
         Me.Label3 = New System.Windows.Forms.Label()
+        Me.SelectTime = New System.Windows.Forms.ComboBox()
+        Me.EndTime = New System.Windows.Forms.Label()
+        Me.CollectDataBtn = New System.Windows.Forms.Button()
+        Me.StartTime = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.Panel1 = New System.Windows.Forms.Panel()
         Label4 = New System.Windows.Forms.Label()
-        Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
+        Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Label4
         '
         Label4.AutoSize = True
-        Label4.Location = New System.Drawing.Point(491, 15)
+        Label4.Location = New System.Drawing.Point(115, 9)
         Label4.Name = "Label4"
-        Label4.Size = New System.Drawing.Size(155, 13)
+        Label4.Size = New System.Drawing.Size(122, 13)
         Label4.TabIndex = 12
-        Label4.Text = "Collecting data on time demand"
+        Label4.Text = "Collecting AIS Live Data"
         '
         'AIS_Read_Data_Time
         '
         Me.AIS_Read_Data_Time.Enabled = True
         Me.AIS_Read_Data_Time.Interval = 500
         '
-        'CollectDataBtn
-        '
-        Me.CollectDataBtn.DialogResult = System.Windows.Forms.DialogResult.No
-        Me.CollectDataBtn.Location = New System.Drawing.Point(20, 105)
-        Me.CollectDataBtn.Name = "CollectDataBtn"
-        Me.CollectDataBtn.Size = New System.Drawing.Size(134, 23)
-        Me.CollectDataBtn.TabIndex = 2
-        Me.CollectDataBtn.Text = "Start Collecting Data"
-        Me.CollectDataBtn.UseVisualStyleBackColor = True
-        '
-        'EndTime
-        '
-        Me.EndTime.AutoSize = True
-        Me.EndTime.Location = New System.Drawing.Point(186, 160)
-        Me.EndTime.Name = "EndTime"
-        Me.EndTime.Size = New System.Drawing.Size(51, 13)
-        Me.EndTime.TabIndex = 4
-        Me.EndTime.Text = "End time:"
-        '
-        'StartTime
-        '
-        Me.StartTime.AutoSize = True
-        Me.StartTime.Location = New System.Drawing.Point(183, 110)
-        Me.StartTime.Name = "StartTime"
-        Me.StartTime.Size = New System.Drawing.Size(54, 13)
-        Me.StartTime.TabIndex = 3
-        Me.StartTime.Text = "Start time:"
-        '
         'btnClearDir
         '
-        Me.btnClearDir.Location = New System.Drawing.Point(20, 155)
+        Me.btnClearDir.Location = New System.Drawing.Point(17, 191)
         Me.btnClearDir.Name = "btnClearDir"
         Me.btnClearDir.Size = New System.Drawing.Size(134, 23)
         Me.btnClearDir.TabIndex = 5
         Me.btnClearDir.Text = "Reset Database"
         Me.btnClearDir.UseVisualStyleBackColor = True
-        '
-        'ComboBox1
-        '
-        Me.ComboBox1.FormattingEnabled = True
-        Me.ComboBox1.Items.AddRange(New Object() {"5", "10", "15", "20", "25", "30"})
-        Me.ComboBox1.Location = New System.Drawing.Point(120, 49)
-        Me.ComboBox1.Name = "ComboBox1"
-        Me.ComboBox1.Size = New System.Drawing.Size(121, 21)
-        Me.ComboBox1.TabIndex = 6
         '
         'btnStart
         '
@@ -118,7 +83,7 @@ Partial Class AIS_Live_Data
         'lblElapsed
         '
         Me.lblElapsed.AutoSize = True
-        Me.lblElapsed.Location = New System.Drawing.Point(24, 165)
+        Me.lblElapsed.Location = New System.Drawing.Point(22, 150)
         Me.lblElapsed.Name = "lblElapsed"
         Me.lblElapsed.Size = New System.Drawing.Size(70, 13)
         Me.lblElapsed.TabIndex = 8
@@ -154,20 +119,6 @@ Partial Class AIS_Live_Data
         Me.lblProcessing.TabIndex = 10
         Me.lblProcessing.Text = "Message"
         '
-        'Panel1
-        '
-        Me.Panel1.BackColor = System.Drawing.SystemColors.ButtonHighlight
-        Me.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.Panel1.Controls.Add(Me.StartTime)
-        Me.Panel1.Controls.Add(Me.CollectDataBtn)
-        Me.Panel1.Controls.Add(Me.EndTime)
-        Me.Panel1.Controls.Add(Me.btnClearDir)
-        Me.Panel1.Controls.Add(Me.ComboBox1)
-        Me.Panel1.Location = New System.Drawing.Point(12, 37)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(370, 203)
-        Me.Panel1.TabIndex = 12
-        '
         'Panel2
         '
         Me.Panel2.BackColor = System.Drawing.SystemColors.ButtonHighlight
@@ -177,10 +128,11 @@ Partial Class AIS_Live_Data
         Me.Panel2.Controls.Add(Me.btnStop)
         Me.Panel2.Controls.Add(Me.lblElapsed)
         Me.Panel2.Controls.Add(Me.lblCurrentTime)
+        Me.Panel2.Controls.Add(Me.btnClearDir)
         Me.Panel2.Controls.Add(Me.lblProcessing)
-        Me.Panel2.Location = New System.Drawing.Point(398, 37)
+        Me.Panel2.Location = New System.Drawing.Point(12, 38)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(363, 203)
+        Me.Panel2.Size = New System.Drawing.Size(477, 265)
         Me.Panel2.TabIndex = 13
         '
         'lblStartTime
@@ -194,7 +146,7 @@ Partial Class AIS_Live_Data
         '
         'Close
         '
-        Me.Close.Location = New System.Drawing.Point(283, 256)
+        Me.Close.Location = New System.Drawing.Point(158, 309)
         Me.Close.Name = "Close"
         Me.Close.Size = New System.Drawing.Size(215, 23)
         Me.Close.TabIndex = 14
@@ -204,51 +156,123 @@ Partial Class AIS_Live_Data
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(114, 16)
+        Me.Label3.Location = New System.Drawing.Point(101, 22)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(234, 13)
+        Me.Label3.Size = New System.Drawing.Size(248, 13)
         Me.Label3.TabIndex = 7
-        Me.Label3.Text = "Collect data on selected interval time in seconds"
+        Me.Label3.Text = "Collecting data on selected interval time in seconds"
+        '
+        'SelectTime
+        '
+        Me.SelectTime.FormattingEnabled = True
+        Me.SelectTime.Items.AddRange(New Object() {"5", "10", "15", "20", "25", "30"})
+        Me.SelectTime.Location = New System.Drawing.Point(120, 30)
+        Me.SelectTime.Name = "SelectTime"
+        Me.SelectTime.Size = New System.Drawing.Size(49, 21)
+        Me.SelectTime.TabIndex = 6
+        '
+        'EndTime
+        '
+        Me.EndTime.AutoSize = True
+        Me.EndTime.Location = New System.Drawing.Point(186, 141)
+        Me.EndTime.Name = "EndTime"
+        Me.EndTime.Size = New System.Drawing.Size(51, 13)
+        Me.EndTime.TabIndex = 4
+        Me.EndTime.Text = "End time:"
+        '
+        'CollectDataBtn
+        '
+        Me.CollectDataBtn.DialogResult = System.Windows.Forms.DialogResult.No
+        Me.CollectDataBtn.Location = New System.Drawing.Point(20, 86)
+        Me.CollectDataBtn.Name = "CollectDataBtn"
+        Me.CollectDataBtn.Size = New System.Drawing.Size(134, 23)
+        Me.CollectDataBtn.TabIndex = 2
+        Me.CollectDataBtn.Text = "Start Collecting Data"
+        Me.CollectDataBtn.UseVisualStyleBackColor = True
+        '
+        'StartTime
+        '
+        Me.StartTime.AutoSize = True
+        Me.StartTime.Location = New System.Drawing.Point(183, 91)
+        Me.StartTime.Name = "StartTime"
+        Me.StartTime.Size = New System.Drawing.Size(54, 13)
+        Me.StartTime.TabIndex = 3
+        Me.StartTime.Text = "Start time:"
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(172, 35)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(47, 13)
+        Me.Label1.TabIndex = 7
+        Me.Label1.Text = "seconds"
+        '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(20, 141)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(134, 23)
+        Me.Button1.TabIndex = 13
+        Me.Button1.Text = "Reset Database"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'Panel1
+        '
+        Me.Panel1.BackColor = System.Drawing.SystemColors.ButtonHighlight
+        Me.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.Panel1.Controls.Add(Me.Button1)
+        Me.Panel1.Controls.Add(Me.Label3)
+        Me.Panel1.Controls.Add(Me.Label1)
+        Me.Panel1.Controls.Add(Me.StartTime)
+        Me.Panel1.Controls.Add(Me.CollectDataBtn)
+        Me.Panel1.Controls.Add(Me.EndTime)
+        Me.Panel1.Controls.Add(Me.SelectTime)
+        Me.Panel1.Location = New System.Drawing.Point(495, 38)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(353, 186)
+        Me.Panel1.TabIndex = 12
+        Me.Panel1.Visible = False
         '
         'AIS_Live_Data
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ActiveCaption
-        Me.ClientSize = New System.Drawing.Size(783, 291)
+        Me.ClientSize = New System.Drawing.Size(501, 340)
         Me.ControlBox = False
         Me.Controls.Add(Label4)
-        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Close)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Panel1)
         Me.Name = "AIS_Live_Data"
-        Me.ShowIcon = False
         Me.Text = "AIS Live Data"
-        Me.Panel1.ResumeLayout(False)
-        Me.Panel1.PerformLayout()
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
+        Me.Panel1.ResumeLayout(False)
+        Me.Panel1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
     Friend WithEvents AIS_Read_Data_Time As System.Windows.Forms.Timer
-    Friend WithEvents CollectDataBtn As System.Windows.Forms.Button
-    Friend WithEvents EndTime As System.Windows.Forms.Label
-    Friend WithEvents StartTime As System.Windows.Forms.Label
     Friend WithEvents btnClearDir As System.Windows.Forms.Button
-    Friend WithEvents ComboBox1 As System.Windows.Forms.ComboBox
     Friend WithEvents btnStart As System.Windows.Forms.Button
     Friend WithEvents lblElapsed As System.Windows.Forms.Label
     Friend WithEvents btnStop As System.Windows.Forms.Button
     Friend WithEvents BackgroundWorker1 As System.ComponentModel.BackgroundWorker
     Friend WithEvents lblCurrentTime As System.Windows.Forms.Label
     Friend WithEvents lblProcessing As System.Windows.Forms.Label
-    Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents Panel2 As System.Windows.Forms.Panel
     Friend WithEvents Close As System.Windows.Forms.Button
-    Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents lblStartTime As System.Windows.Forms.Label
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents SelectTime As System.Windows.Forms.ComboBox
+    Friend WithEvents EndTime As System.Windows.Forms.Label
+    Friend WithEvents CollectDataBtn As System.Windows.Forms.Button
+    Friend WithEvents StartTime As System.Windows.Forms.Label
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents Button1 As System.Windows.Forms.Button
+    Friend WithEvents Panel1 As System.Windows.Forms.Panel
 
 End Class

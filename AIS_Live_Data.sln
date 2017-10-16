@@ -3,14 +3,34 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "AIS_Live_Data", "AIS_Live_Data\AIS_Live_Data.vbproj", "{5FAC6476-ADE7-4622-8361-32B96A4F52A8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{274A7285-44F6-471C-AE16-69423D74F8EC}"
+	ProjectSection(SolutionItems) = preProject
+		AIS_Live_Data.vsmdi = AIS_Live_Data.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = AIS_Live_Data.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5FAC6476-ADE7-4622-8361-32B96A4F52A8}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{5FAC6476-ADE7-4622-8361-32B96A4F52A8}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{5FAC6476-ADE7-4622-8361-32B96A4F52A8}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{5FAC6476-ADE7-4622-8361-32B96A4F52A8}.Debug|x86.ActiveCfg = Debug|x86
 		{5FAC6476-ADE7-4622-8361-32B96A4F52A8}.Debug|x86.Build.0 = Debug|x86
+		{5FAC6476-ADE7-4622-8361-32B96A4F52A8}.Release|Any CPU.ActiveCfg = Release|x86
+		{5FAC6476-ADE7-4622-8361-32B96A4F52A8}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{5FAC6476-ADE7-4622-8361-32B96A4F52A8}.Release|Mixed Platforms.Build.0 = Release|x86
 		{5FAC6476-ADE7-4622-8361-32B96A4F52A8}.Release|x86.ActiveCfg = Release|x86
 		{5FAC6476-ADE7-4622-8361-32B96A4F52A8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
