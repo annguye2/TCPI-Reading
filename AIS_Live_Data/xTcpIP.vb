@@ -98,8 +98,6 @@ Public Class xTcpIP
         End If
     End Sub
 
-
-
     Public Sub DeleteFile()
         Dim x As Integer
         Dim paths() As String = IO.Directory.GetFiles("C:\AIS_Data\", "ais_live.csv")
