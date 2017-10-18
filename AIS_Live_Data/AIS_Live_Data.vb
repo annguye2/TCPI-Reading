@@ -58,11 +58,13 @@ Public Class AIS_Live_Data
     End Sub
 
     Private Sub btnStop_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnStop.Click
+
         stop_time = Now
         elapsed_time = stop_time.Subtract(start_time)
         lblElapsed.Text = "Elapsed time: " & elapsed_time.TotalSeconds.ToString("0.0") & " seconds"
         btnStop.Enabled = False
         BackgroundWorker1.CancelAsync()
+        KillArcGISProcesses()
         xTcpIP.BuildCSVData()
         xTcpIP.CreatingFeatureClass()
 
@@ -145,6 +147,9 @@ Public Class AIS_Live_Data
 
 
     Public Sub CleanDir(ByVal aisData)
+
+        'close ArcCatalog Application
+        KillArcGISProcesses()
         'Remove all file in data
         For Each deleteFile In Directory.GetFiles(aisData, "*.*", SearchOption.TopDirectoryOnly)
             File.Delete(deleteFile)
@@ -159,8 +164,25 @@ Public Class AIS_Live_Data
 
     End Sub
 
-   
-    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+
+ 
+
+
+    Public Sub KillArcGISProcesses()
+        Try
+            Dim arrArcCatalogProcess() As Process = System.Diagnostics.Process.GetProcessesByName("ArcCatalog")
+            For Each arcCatalog As Process In arrArcCatalogProcess
+                arcCatalog.Kill()
+            Next
+            'close ArcCatalog Application
+            Dim arrArcMapProcess() As Process = System.Diagnostics.Process.GetProcessesByName("ArcMap")
+            For Each arcMap As Process In arrArcMapProcess
+                arcMap.Kill()
+            Next
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+        End Try
 
     End Sub
+
 End Class
