@@ -53,16 +53,10 @@ Public Class xTcpIP
         Try
 
             Console.WriteLine("Start building CSV ais_live_data.csv")
-
-
-
             Dim dir As String = "C:\AIS_Miner"
             Directory.SetCurrentDirectory(dir)
-
-
             Dim proc As New System.Diagnostics.Process()
             proc = Process.Start("C:\AIS_Miner\AISMiner.exe", "-i C:\AIS_Data\ais_live_data.log -o C:\AIS_Data\ais_live.csv -m 0")
-
         Catch ex As Exception
             Console.WriteLine(ex.Message)
         End Try
@@ -72,7 +66,6 @@ Public Class xTcpIP
         Try
             'creating AIS feature class 
             Dim ArcPyProc As New System.Diagnostics.Process()
-
             ArcPyProc = Process.Start("C:\Python27\ArcGIS10.3\python.exe", "C:\AIS_Py\xCsvToTable.py")
         Catch ex As Exception
             Console.WriteLine(ex.Message)
@@ -87,7 +80,6 @@ Public Class xTcpIP
         Catch ex As Exception
         End Try
     End Sub
-
 
     Public Sub deleteSchemaIni()
         Dim FileToDelete As String

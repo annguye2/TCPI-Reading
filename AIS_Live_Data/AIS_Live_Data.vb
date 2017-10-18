@@ -132,19 +132,13 @@ Public Class AIS_Live_Data
         lblCurrentTime.Text = "End time: " & Now.ToString()
     End Sub
 
-
-
-
     Private Sub Close_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Close.Click
         Try
             Me.Dispose()
-
         Catch ex As Exception
 
         End Try
     End Sub
-
-
 
     Public Sub CleanDir(ByVal aisData)
 
@@ -164,10 +158,6 @@ Public Class AIS_Live_Data
 
     End Sub
 
-
- 
-
-
     Public Sub KillArcGISProcesses()
         Try
             Dim arrArcCatalogProcess() As Process = System.Diagnostics.Process.GetProcessesByName("ArcCatalog")
@@ -179,6 +169,7 @@ Public Class AIS_Live_Data
             For Each arcMap As Process In arrArcMapProcess
                 arcMap.Kill()
             Next
+            System.Threading.Thread.Sleep(1000)
         Catch ex As Exception
             Console.WriteLine(ex.Message)
         End Try
