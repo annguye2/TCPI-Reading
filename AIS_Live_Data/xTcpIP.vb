@@ -82,12 +82,12 @@ Public Class xTcpIP
     End Sub
 
     Public Sub deleteSchemaIni()
-        Dim FileToDelete As String
-        FileToDelete = "C:\AIS_Data\schema.ini"
-        If System.IO.File.Exists(FileToDelete) = True Then
-            System.IO.File.Delete(FileToDelete)
-            MsgBox("File Deleted")
-        End If
+        'Dim FileToDelete As String
+        'FileToDelete = "C:\AIS_Data\schema.ini"
+        'If System.IO.File.Exists(FileToDelete) = True Then
+        '    System.IO.File.Delete(FileToDelete)
+        '    MsgBox("File Deleted")
+        'End If
     End Sub
 
     Public Sub DeleteFile()

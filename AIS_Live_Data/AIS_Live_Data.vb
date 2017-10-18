@@ -38,8 +38,9 @@ Public Class AIS_Live_Data
 
 
     Private Sub btnStart_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnStart.Click
+        CreatingSchema()
         xTcpIP = New xTcpIP("C:\AIS_Data\ais_live_data.log")
-        TcpIP.deleteSchemaIni()
+
         btnStart.Enabled = False
         btnStop.Enabled = True
 
@@ -146,7 +147,11 @@ Public Class AIS_Live_Data
         KillArcGISProcesses()
         'Remove all file in data
         For Each deleteFile In Directory.GetFiles(aisData, "*.*", SearchOption.TopDirectoryOnly)
+            'If (deleteFile <> "C:\AIS_Data\schema.ini") Then
+
             File.Delete(deleteFile)
+            ' End If
+
         Next
 
         'Remove gdb
@@ -174,6 +179,19 @@ Public Class AIS_Live_Data
             Console.WriteLine(ex.Message)
         End Try
 
+    End Sub
+
+    Public Sub CreatingSchema()
+        Using sw As New System.IO.StreamWriter("C:\AIS_Data\schema.ini", False)
+            sw.WriteLine("test text")
+        End Using
+
+        'Using sr As New System.IO.StreamReader("c:\myfile.ini")
+        '    Dim Line As String = sr.ReadLine
+        '    Do While Line IsNot Nothing
+        '        MsgBox(Line)
+        '    Loop
+        'End Using
     End Sub
 
 End Class
