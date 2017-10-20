@@ -67,7 +67,7 @@ Public Class AIS_Live_Data
         BackgroundWorker1.CancelAsync()
         KillArcGISProcesses()
         xTcpIP.BuildCSVData()
-        xTcpIP.CreatingFeatureClass()
+        'xTcpIP.CreatingFeatureClass()
 
 
     End Sub
@@ -182,16 +182,18 @@ Public Class AIS_Live_Data
     End Sub
 
     Public Sub CreatingSchema()
+        'This schema file is one of the most important part that provide control for creating field types to geospatial table. 
+        'Without this schema.ini, the field type with changes most of the time. From there fields types in table are changed and app has no control over Lat, Lon, Date type to build table and then feature class.
+        'To control more field type, just add in more line in the same format between Using statement
         Using sw As New System.IO.StreamWriter("C:\AIS_Data\schema.ini", False)
-            sw.WriteLine("test text")
+            sw.WriteLine("[ais_live.csv]")
+            sw.WriteLine("Col2=Longitude Double")
+            sw.WriteLine("Col3=Latitude Double")
+            sw.WriteLine("Col5=" & ControlChars.Quote & "Time tag last rpt (GMT)" & ControlChars.Quote & " Text")
+
         End Using
 
-        'Using sr As New System.IO.StreamReader("c:\myfile.ini")
-        '    Dim Line As String = sr.ReadLine
-        '    Do While Line IsNot Nothing
-        '        MsgBox(Line)
-        '    Loop
-        'End Using
+
     End Sub
 
 End Class

@@ -67,6 +67,8 @@ Public Class xTcpIP
             'creating AIS feature class 
             Dim ArcPyProc As New System.Diagnostics.Process()
             ArcPyProc = Process.Start("C:\Python27\ArcGIS10.3\python.exe", "C:\AIS_Py\xCsvToTable.py")
+            ArcPyProc.WaitForExit()
+            MessageBox.Show("Done!")
         Catch ex As Exception
             Console.WriteLine(ex.Message)
         End Try
