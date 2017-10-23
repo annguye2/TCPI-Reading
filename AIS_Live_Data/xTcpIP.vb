@@ -57,12 +57,13 @@ Public Class xTcpIP
             Directory.SetCurrentDirectory(dir)
             Dim proc As New System.Diagnostics.Process()
             proc = Process.Start("C:\AIS_Miner\AISMiner.exe", "-i C:\AIS_Data\ais_live_data.log -o C:\AIS_Data\ais_live.csv -m 0")
+            Console.WriteLine("ais_live_data.csv has successfully been created")
         Catch ex As Exception
             Console.WriteLine(ex.Message)
         End Try
     End Sub
 
-    Public Sub CreatingFeatureClass()
+    Public Sub xCreatingFeatureClass()
         Try
             'creating AIS feature class 
             Dim ArcPyProc As New System.Diagnostics.Process()
@@ -75,6 +76,41 @@ Public Class xTcpIP
 
     End Sub
 
+
+    Public Sub CreatingFeatureClass()
+
+        Try
+            '  ArcPyProc = Process.Start("C:\Python27\ArcGIS10.3\python.exe", "C:\AIS_Py\xCsvToTable.py")
+            Dim ArcPyProc As New System.Diagnostics.Process()
+            ' this is the name of the process we want to execute 
+            ArcPyProc.StartInfo.FileName = "C:\Python27\ArcGIS10.3\python.exe"
+
+            '  p.StartInfo.WorkingDirectory = workingDir
+
+            ArcPyProc.StartInfo.Arguments = "C:\AIS_Py\xCsvToTable.py"
+            ' need to set this to false to redirect output
+            ArcPyProc.StartInfo.UseShellExecute = False
+            ArcPyProc.StartInfo.RedirectStandardOutput = True
+            ArcPyProc.StartInfo.CreateNoWindow = True
+            ' start the process 
+            ArcPyProc.Start()
+            ' read all the output
+            ' here we could just read line by line and display it
+            ' in an output window 
+            Dim output As String = ArcPyProc.StandardOutput.ReadToEnd
+            Console.WriteLine(output)
+            ' wait for the process to terminate 
+            ArcPyProc.WaitForExit()
+            MessageBox.Show("Done!")
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+        End Try
+
+
+
+
+    End Sub
+
     Public Sub CloseConnection()
         Try
             stream.Close()
@@ -83,14 +119,7 @@ Public Class xTcpIP
         End Try
     End Sub
 
-    Public Sub deleteSchemaIni()
-        'Dim FileToDelete As String
-        'FileToDelete = "C:\AIS_Data\schema.ini"
-        'If System.IO.File.Exists(FileToDelete) = True Then
-        '    System.IO.File.Delete(FileToDelete)
-        '    MsgBox("File Deleted")
-        'End If
-    End Sub
+  
 
     Public Sub DeleteFile()
         Dim x As Integer

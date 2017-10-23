@@ -34,7 +34,7 @@ Partial Class AIS_Live_Data
         Me.lblProcessing = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.lblStartTime = New System.Windows.Forms.Label()
-        Me.Close = New System.Windows.Forms.Button()
+        Me.btnClose = New System.Windows.Forms.Button()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.SelectTime = New System.Windows.Forms.ComboBox()
         Me.EndTime = New System.Windows.Forms.Label()
@@ -64,6 +64,7 @@ Partial Class AIS_Live_Data
         '
         'btnClearDir
         '
+        Me.btnClearDir.Enabled = False
         Me.btnClearDir.Location = New System.Drawing.Point(17, 191)
         Me.btnClearDir.Name = "btnClearDir"
         Me.btnClearDir.Size = New System.Drawing.Size(134, 23)
@@ -144,14 +145,14 @@ Partial Class AIS_Live_Data
         Me.lblStartTime.TabIndex = 12
         Me.lblStartTime.Text = "Start time: "
         '
-        'Close
+        'btnClose
         '
-        Me.Close.Location = New System.Drawing.Point(158, 309)
-        Me.Close.Name = "Close"
-        Me.Close.Size = New System.Drawing.Size(215, 23)
-        Me.Close.TabIndex = 14
-        Me.Close.Text = "Exit"
-        Me.Close.UseVisualStyleBackColor = True
+        Me.btnClose.Location = New System.Drawing.Point(158, 309)
+        Me.btnClose.Name = "btnClose"
+        Me.btnClose.Size = New System.Drawing.Size(215, 23)
+        Me.btnClose.TabIndex = 14
+        Me.btnClose.Text = "Exit"
+        Me.btnClose.UseVisualStyleBackColor = True
         '
         'Label3
         '
@@ -239,10 +240,10 @@ Partial Class AIS_Live_Data
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ActiveCaption
-        Me.ClientSize = New System.Drawing.Size(501, 340)
+        Me.ClientSize = New System.Drawing.Size(497, 340)
         Me.ControlBox = False
         Me.Controls.Add(Label4)
-        Me.Controls.Add(Me.Close)
+        Me.Controls.Add(Me.btnClose)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Panel1)
         Me.Name = "AIS_Live_Data"
@@ -264,7 +265,7 @@ Partial Class AIS_Live_Data
     Friend WithEvents lblCurrentTime As System.Windows.Forms.Label
     Friend WithEvents lblProcessing As System.Windows.Forms.Label
     Friend WithEvents Panel2 As System.Windows.Forms.Panel
-    Friend WithEvents Close As System.Windows.Forms.Button
+    Friend WithEvents btnClose As System.Windows.Forms.Button
     Friend WithEvents lblStartTime As System.Windows.Forms.Label
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents SelectTime As System.Windows.Forms.ComboBox

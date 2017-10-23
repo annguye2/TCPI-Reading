@@ -33,7 +33,7 @@ Public Class AIS_Live_Data
     Private Sub btnClearDir_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnClearDir.Click
         'Clean up old data 
         CleanDir("C:\AIS_Data")
-
+        btnClearDir.Enabled = False
     End Sub
 
 
@@ -42,6 +42,7 @@ Public Class AIS_Live_Data
         xTcpIP = New xTcpIP("C:\AIS_Data\ais_live_data.log")
 
         btnStart.Enabled = False
+        btnClearDir.Enabled = False
         btnStop.Enabled = True
 
         '' these properties should be set to True (at design-time or runtime) before calling the RunWorkerAsync
@@ -67,7 +68,8 @@ Public Class AIS_Live_Data
         BackgroundWorker1.CancelAsync()
         KillArcGISProcesses()
         xTcpIP.BuildCSVData()
-        'xTcpIP.CreatingFeatureClass()
+        xTcpIP.CreatingFeatureClass()
+        btnClearDir.Enabled = True
 
 
     End Sub
@@ -133,7 +135,7 @@ Public Class AIS_Live_Data
         lblCurrentTime.Text = "End time: " & Now.ToString()
     End Sub
 
-    Private Sub Close_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Close.Click
+    Private Sub Close_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnClose.Click
         Try
             Me.Dispose()
         Catch ex As Exception
