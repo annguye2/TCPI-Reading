@@ -1,34 +1,24 @@
 ﻿Imports System.Windows.Forms
 Imports System.IO
 
+
 Public Class AIS_Live_Data
-    Dim TcpIP As TcpIP
+    'Dim TcpIP As TcpIP
 
     Dim dataDir
-    Dim xTcpIP As xTcpIP
-
-
+    Public Shared xTcpIP As xTcpIP
     Dim start_time As DateTime
     Dim stop_time As DateTime
-    Dim curr_time As DateTime
     Dim elapsed_time As TimeSpan
-
+    Private Shared WithEvents myTimer As New System.Windows.Forms.Timer()
+    Private stopProcessing As Boolean
 
     Private Sub AIS_Live_Data_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        TcpIP = New TcpIP(AIS_Read_Data_Time, "C:\AIS_Data\ais_live_data.log")
         CleanDir("C:\AIS_Data")
-        SelectTime.SelectedIndex = 0
+        stopProcessing = False
 
     End Sub
 
-    Private Sub CollectDataBtn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CollectDataBtn.Click
-  
-        TcpIP.deleteSchemaIni()
-        StartTime.Text = DateTime.Now.ToString
-        TcpIP.Connect()
-        EndTime.Text = DateTime.Now.ToString
-
-    End Sub
 
     Private Sub btnClearDir_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnClearDir.Click
         'Clean up old data 
@@ -38,9 +28,9 @@ Public Class AIS_Live_Data
 
 
     Private Sub btnStart_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnStart.Click
+ 
         CreatingSchema()
         xTcpIP = New xTcpIP("C:\AIS_Data\ais_live_data.log")
-
         btnStart.Enabled = False
         btnClearDir.Enabled = False
         btnStop.Enabled = True
@@ -54,22 +44,25 @@ Public Class AIS_Live_Data
         BackgroundWorker1.RunWorkerAsync()
         start_time = Now
 
-        elapsed_time = stop_time.Subtract(start_time)
+        'elapsed_time = stop_time.Subtract(start_time)
         lblElapsed.Text = "Elapsed time: " & "0.0" & " seconds"
         lblStartTime.Text = "Start time: " & Now.ToString
     End Sub
 
     Private Sub btnStop_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnStop.Click
-
+        'this worked well, just temporary close for testing
         stop_time = Now
         elapsed_time = stop_time.Subtract(start_time)
         lblElapsed.Text = "Elapsed time: " & elapsed_time.TotalSeconds.ToString("0.0") & " seconds"
         btnStop.Enabled = False
         BackgroundWorker1.CancelAsync()
         KillArcGISProcesses()
-        xTcpIP.BuildCSVData()
-        xTcpIP.CreatingFeatureClass()
+        stopProcessing = True
+        xTcpIP.getProcessStatus(True)
+        'xTcpIP.BuildCSVData()
+        'xTcpIP.CreatingFeatureClass()
         btnClearDir.Enabled = True
+        'end test
 
 
     End Sub
@@ -78,28 +71,33 @@ Public Class AIS_Live_Data
     Private Sub BackgroundWorker1_DoWork(ByVal sender As Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorker1.DoWork
         '' The asynchronous task you want to perform goes here
         '' the following is an example of how it typically goes.
-
-        Const Max As Integer = 10000
+        Const Max As Integer = 1000000  '  100 seconds
         For i = 1 To Max
-            BackgroundWorker1.ReportProgress(CInt(100 * i / Max), "Collecting .... ") '
             '' check at regular intervals for CancellationPending
+            'xTcpIP.xConnect()
+            '===========================Testing section
+            myTimer = New System.Windows.Forms.Timer()
+            myTimer.Interval = 5000  ' time inteval for 5 seconds
+            Console.WriteLine("Start time: " & Now.ToString)
+            While BackgroundWorker1.CancellationPending = False
+                ' Processes all the events in the queue.
+                myTimer.Start()
+                'Console.WriteLine("Start time: " & Now.ToString)
+                BackgroundWorker1.ReportProgress(100, "Collecting .... ") '
+                xTcpIP.xConnect()
+                System.Windows.Forms.Application.DoEvents()
+
+            End While
+
             If BackgroundWorker1.CancellationPending Then
-                BackgroundWorker1.ReportProgress(CInt(100 * i / Max), "Stop")
+                e.Cancel = True
+                BackgroundWorker1.ReportProgress(100, "Completed.")
+                xTcpIP.CloseConnection()
                 Exit For
+            Else
             End If
-            xTcpIP.xConnect()
         Next
 
-        '' any cleanup code go here
-        '' ensure that you close all open resources before exitting out of this Method.
-        '' try to skip off whatever is not desperately necessary if CancellationPending is True
-
-        '' set the e.Cancel to True to indicate to the RunWorkerCompleted that you cancelled out
-        If BackgroundWorker1.CancellationPending Then
-            e.Cancel = True
-            BackgroundWorker1.ReportProgress(100, "Completed.")
-            xTcpIP.CloseConnection()
-        End If
     End Sub
 
     Private Sub BackgroundWorker1_ProgressChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ProgressChangedEventArgs) Handles BackgroundWorker1.ProgressChanged
@@ -113,25 +111,29 @@ Public Class AIS_Live_Data
         '' This event is fired when your BackgroundWorker exits.
         '' It may have exitted Normally after completing its task, 
         '' or because of Cancellation, or due to any Error.
+        Try
+            If e.Error IsNot Nothing Then
+                '' if BackgroundWorker terminated due to error
+                MessageBox.Show(e.Error.Message)
+                lblProcessing.Text = "Error occurred!"
 
-        If e.Error IsNot Nothing Then
-            '' if BackgroundWorker terminated due to error
-            MessageBox.Show(e.Error.Message)
-            lblProcessing.Text = "Error occurred!"
+            ElseIf e.Cancelled Then
+                '' otherwise if it was cancelled
+                ''MessageBox.Show("Complete Collecting Data!")
+                lblProcessing.Text = "Complete Collecting Data!"
 
-        ElseIf e.Cancelled Then
-            '' otherwise if it was cancelled
-            ''MessageBox.Show("Complete Collecting Data!")
-            lblProcessing.Text = "Complete Collecting Data!"
+            Else
+                '' otherwise it completed normally
+                MessageBox.Show("Task completed!")
+                lblProcessing.Text = "Error completed!"
+            End If
 
-        Else
-            '' otherwise it completed normally
-            MessageBox.Show("Task completed!")
-            lblProcessing.Text = "Error completed!"
-        End If
-
-        btnStart.Enabled = True
-        btnStop.Enabled = False
+            btnStart.Enabled = True
+            btnStop.Enabled = False
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+        End Try
+       
         lblCurrentTime.Text = "End time: " & Now.ToString()
     End Sub
 
@@ -139,30 +141,29 @@ Public Class AIS_Live_Data
         Try
             Me.Dispose()
         Catch ex As Exception
-
+            Console.WriteLine(ex.Message)
         End Try
     End Sub
 
     Public Sub CleanDir(ByVal aisData)
+        Try
+            'close ArcCatalog Application
+            KillArcGISProcesses()
+            'Remove all file in data
+            For Each deleteFile In Directory.GetFiles(aisData, "*.*", SearchOption.TopDirectoryOnly)
+                'If (deleteFile <> "C:\AIS_Data\schema.ini") Then
 
-        'close ArcCatalog Application
-        KillArcGISProcesses()
-        'Remove all file in data
-        For Each deleteFile In Directory.GetFiles(aisData, "*.*", SearchOption.TopDirectoryOnly)
-            'If (deleteFile <> "C:\AIS_Data\schema.ini") Then
-
-            File.Delete(deleteFile)
-            ' End If
-
-        Next
-
-        'Remove gdb
-        'Dim path As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & aisData
-        If Directory.Exists(aisData & "\ais.gdb") Then
-            System.IO.Directory.Delete(aisData & "\ais.gdb", True)
-        End If
-
-
+                File.Delete(deleteFile)
+                ' End If
+            Next
+            'Remove gdb
+            'Dim path As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) & aisData
+            If Directory.Exists(aisData & "\ais.gdb") Then
+                System.IO.Directory.Delete(aisData & "\ais.gdb", True)
+            End If
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+        End Try
     End Sub
 
     Public Sub KillArcGISProcesses()
@@ -187,15 +188,31 @@ Public Class AIS_Live_Data
         'This schema file is one of the most important part that provide control for creating field types to geospatial table. 
         'Without this schema.ini, the field type with changes most of the time. From there fields types in table are changed and app has no control over Lat, Lon, Date type to build table and then feature class.
         'To control more field type, just add in more line in the same format between Using statement
-        Using sw As New System.IO.StreamWriter("C:\AIS_Data\schema.ini", False)
-            sw.WriteLine("[ais_live.csv]")
-            sw.WriteLine("Col2=Longitude Double")
-            sw.WriteLine("Col3=Latitude Double")
-            sw.WriteLine("Col5=" & ControlChars.Quote & "Time tag last rpt (GMT)" & ControlChars.Quote & " Text")
 
-        End Using
+        Try
+            Using sw As New System.IO.StreamWriter("C:\AIS_Data\schema.ini", False)
+                sw.WriteLine("[ais_live.csv]")
+                sw.WriteLine("Col2=Longitude Double")
+                sw.WriteLine("Col3=Latitude Double")
+                sw.WriteLine("Col5=" & ControlChars.Quote & "Time tag last rpt (GMT)" & ControlChars.Quote & " Text")
+            End Using
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+        End Try
 
+    End Sub
 
+    ' This is the method to run when the timer is raised.
+    Private Shared Sub TimerEventProcessor(ByVal myObject As Object, ByVal myEventArgs As EventArgs) Handles myTimer.Tick
+        Try
+            Console.WriteLine("Stop time: " & Now.ToString)
+            myTimer.Stop()
+            'MessageBox.Show(Now.ToString)
+            xTcpIP.BuildCSVData()
+            xTcpIP.CreatingFeatureClass()
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+        End Try
     End Sub
 
 End Class

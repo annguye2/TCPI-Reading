@@ -5,7 +5,7 @@ Imports System.Timers
 
 
 Public Class xTcpIP
-    Dim proc As New System.Diagnostics.Process()
+    'Dim proc As New System.Diagnostics.Process()
     Private PathStr As String
     Dim clientSocket As New System.Net.Sockets.TcpClient()
     Dim serverStream As NetworkStream
@@ -15,17 +15,17 @@ Public Class xTcpIP
     Dim client As New TcpClient(server, port)
     Dim data As [Byte]() = System.Text.Encoding.ASCII.GetBytes(Message)
     Dim stream As NetworkStream = client.GetStream()
-
+    Dim stopProcess As Boolean
     Public Sub New(ByVal _PathStr As String)
         ' Initialize with a specific course in mind
         PathStr = _PathStr
-
+        stopProcess = False
     End Sub
 
     Public Sub xConnect()
 
         'set buffer size. if this buffer is full the process of reading will stop and the app will be hang
-        client.SendBufferSize = 6550000
+        client.SendBufferSize = 655000000
         stream.Write(data, 0, data.Length)
         ' Receive the TcpServer.response.
         ' Buffer to store the response bytes.
@@ -51,62 +51,49 @@ Public Class xTcpIP
 
     Public Sub BuildCSVData()
         Try
-
-            Console.WriteLine("Start building CSV ais_live_data.csv")
+            'Console.WriteLine("Start building CSV ais_live_data.csv")
             Dim dir As String = "C:\AIS_Miner"
             Directory.SetCurrentDirectory(dir)
-            Dim proc As New System.Diagnostics.Process()
-            proc = Process.Start("C:\AIS_Miner\AISMiner.exe", "-i C:\AIS_Data\ais_live_data.log -o C:\AIS_Data\ais_live.csv -m 0")
-            Console.WriteLine("ais_live_data.csv has successfully been created")
+            Dim CSVProcess As New System.Diagnostics.Process()
+            CSVProcess = Process.Start("C:\AIS_Miner\AISMiner.exe", "-i C:\AIS_Data\ais_live_data.log -o C:\AIS_Data\ais_live.csv -m 0")
+            CSVProcess.WaitForExit()
+            Console.WriteLine("CSV file has successfully been created")
         Catch ex As Exception
             Console.WriteLine(ex.Message)
         End Try
     End Sub
 
-    Public Sub xCreatingFeatureClass()
-        Try
-            'creating AIS feature class 
-            Dim ArcPyProc As New System.Diagnostics.Process()
-            ArcPyProc = Process.Start("C:\Python27\ArcGIS10.3\python.exe", "C:\AIS_Py\xCsvToTable.py")
-            ArcPyProc.WaitForExit()
-            MessageBox.Show("Done!")
-        Catch ex As Exception
-            Console.WriteLine(ex.Message)
-        End Try
-
-    End Sub
-
-
+  
     Public Sub CreatingFeatureClass()
-
         Try
-            '  ArcPyProc = Process.Start("C:\Python27\ArcGIS10.3\python.exe", "C:\AIS_Py\xCsvToTable.py")
+
             Dim ArcPyProc As New System.Diagnostics.Process()
             ' this is the name of the process we want to execute 
             ArcPyProc.StartInfo.FileName = "C:\Python27\ArcGIS10.3\python.exe"
-
-            '  p.StartInfo.WorkingDirectory = workingDir
-
             ArcPyProc.StartInfo.Arguments = "C:\AIS_Py\xCsvToTable.py"
             ' need to set this to false to redirect output
             ArcPyProc.StartInfo.UseShellExecute = False
-            ArcPyProc.StartInfo.RedirectStandardOutput = True
+            'ArcPyProc.StartInfo.RedirectStandardOutput = True
             ArcPyProc.StartInfo.CreateNoWindow = True
             ' start the process 
             ArcPyProc.Start()
             ' read all the output
             ' here we could just read line by line and display it
             ' in an output window 
-            Dim output As String = ArcPyProc.StandardOutput.ReadToEnd
-            Console.WriteLine(output)
+            ' Dim output As String = ArcPyProc.StandardOutput.ReadToEnd
+            'Console.WriteLine(output)
             ' wait for the process to terminate 
             ArcPyProc.WaitForExit()
-            MessageBox.Show("Done!")
+            Console.WriteLine("AIS feature class has successfully been created")
+            If stopProcess = True Then
+                MessageBox.Show("Done!!")
+            Else
+                Console.WriteLine("Start another time: " & Now.ToString)
+            End If
+
         Catch ex As Exception
             Console.WriteLine(ex.Message)
         End Try
-
-
 
 
     End Sub
@@ -116,11 +103,28 @@ Public Class xTcpIP
             stream.Close()
             client.Close()
         Catch ex As Exception
+            Console.WriteLine(ex.Message)
         End Try
     End Sub
 
-  
+    Public Sub OpenConnection()
+        Try
+            client = New TcpClient(server, port)
+            data = System.Text.Encoding.ASCII.GetBytes(Message)
+            stream = client.GetStream()
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+        End Try
+    End Sub
 
+
+    Public Sub getProcessStatus(ByVal _stopProcess As Boolean)
+        Try
+            stopProcess = _stopProcess
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+        End Try
+    End Sub
     Public Sub DeleteFile()
         Dim x As Integer
         Dim paths() As String = IO.Directory.GetFiles("C:\AIS_Data\", "ais_live.csv")
