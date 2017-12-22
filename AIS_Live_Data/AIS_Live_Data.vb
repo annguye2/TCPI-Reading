@@ -1,22 +1,31 @@
 ﻿Imports System.Windows.Forms
 Imports System.IO
+Imports System.Threading
 
 
 Public Class AIS_Live_Data
     'Dim TcpIP As TcpIP
-
+    Public Shared count
     Dim dataDir
     Public Shared xTcpIP As xTcpIP
     Dim start_time As DateTime
     Dim stop_time As DateTime
     Dim elapsed_time As TimeSpan
-    Private Shared WithEvents myTimer As New System.Windows.Forms.Timer()
+    Public WithEvents myTimer As New System.Windows.Forms.Timer()
     Private stopProcessing As Boolean
+
+
+    Private writer As RichTextBoxWriter = Nothing
+
+
 
     Private Sub AIS_Live_Data_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         CleanDir("C:\AIS_Data")
         stopProcessing = False
+        count = 1
+        writer = New RichTextBoxWriter(rtbProcessingMsg)
 
+        Console.SetOut(writer)
     End Sub
 
 
@@ -28,7 +37,7 @@ Public Class AIS_Live_Data
 
 
     Private Sub btnStart_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnStart.Click
- 
+
         CreatingSchema()
         xTcpIP = New xTcpIP("C:\AIS_Data\ais_live_data.log")
         btnStart.Enabled = False
@@ -61,6 +70,7 @@ Public Class AIS_Live_Data
         xTcpIP.getProcessStatus(True)
         'xTcpIP.BuildCSVData()
         'xTcpIP.CreatingFeatureClass()
+        'Console.WriteLine("Stop reading AIS live data.")
         btnClearDir.Enabled = True
         'end test
 
@@ -71,28 +81,36 @@ Public Class AIS_Live_Data
     Private Sub BackgroundWorker1_DoWork(ByVal sender As Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorker1.DoWork
         '' The asynchronous task you want to perform goes here
         '' the following is an example of how it typically goes.
-        Const Max As Integer = 1000000  '  100 seconds
+        Const Max As Integer = 1000000  '  1000 seconds
         For i = 1 To Max
             '' check at regular intervals for CancellationPending
-            'xTcpIP.xConnect()
-            '===========================Testing section
+
             myTimer = New System.Windows.Forms.Timer()
-            myTimer.Interval = 5000  ' time inteval for 5 seconds
+            myTimer.Interval = 5000 ' time inteval for 5 seconds
             Console.WriteLine("Start time: " & Now.ToString)
+
+            xTcpIP.OpenConnection()
             While BackgroundWorker1.CancellationPending = False
                 ' Processes all the events in the queue.
                 myTimer.Start()
-                'Console.WriteLine("Start time: " & Now.ToString)
-                BackgroundWorker1.ReportProgress(100, "Collecting .... ") '
+                BackgroundWorker1.ReportProgress(100, "Collecting data....")
+
                 xTcpIP.xConnect()
                 System.Windows.Forms.Application.DoEvents()
 
             End While
+            xTcpIP.CloseConnection()
 
             If BackgroundWorker1.CancellationPending Then
                 e.Cancel = True
                 BackgroundWorker1.ReportProgress(100, "Completed.")
                 xTcpIP.CloseConnection()
+    
+                Console.WriteLine("Start publishing AIS Webservices.  Please wait....")
+                xTcpIP.PublishingAISWebServices()
+                Console.WriteLine("AIS Webservices has successfully been published!")
+ 
+                MessageBox.Show("Done")
                 Exit For
             Else
             End If
@@ -119,19 +137,16 @@ Public Class AIS_Live_Data
 
             ElseIf e.Cancelled Then
                 '' otherwise if it was cancelled
-                ''MessageBox.Show("Complete Collecting Data!")
                 lblProcessing.Text = "Complete Collecting Data!"
-
             Else
                 '' otherwise it completed normally
-                MessageBox.Show("Task completed!")
                 lblProcessing.Text = "Error completed!"
             End If
 
             btnStart.Enabled = True
             btnStop.Enabled = False
         Catch ex As Exception
-            Console.WriteLine(ex.Message)
+            Console.WriteLine("BackgroundWorker1_RunWorkerCompleted error: " + ex.Message)
         End Try
        
         lblCurrentTime.Text = "End time: " & Now.ToString()
@@ -179,7 +194,7 @@ Public Class AIS_Live_Data
             Next
             System.Threading.Thread.Sleep(1000)
         Catch ex As Exception
-            Console.WriteLine(ex.Message)
+            Console.WriteLine("KillArcGISProcesses error: " + ex.Message)
         End Try
 
     End Sub
@@ -197,22 +212,37 @@ Public Class AIS_Live_Data
                 sw.WriteLine("Col5=" & ControlChars.Quote & "Time tag last rpt (GMT)" & ControlChars.Quote & " Text")
             End Using
         Catch ex As Exception
-            Console.WriteLine(ex.Message)
+            Console.WriteLine("CreatingSchema error: " + ex.Message)
         End Try
 
     End Sub
 
     ' This is the method to run when the timer is raised.
-    Private Shared Sub TimerEventProcessor(ByVal myObject As Object, ByVal myEventArgs As EventArgs) Handles myTimer.Tick
+    Public Sub TimerEventProcessor(ByVal myObject As Object, ByVal myEventArgs As EventArgs) Handles myTimer.Tick
         Try
+
+            Dim start As DateTime = Now
+            Dim geosptialElapsedTime As New TimeSpan
             Console.WriteLine("Stop time: " & Now.ToString)
             myTimer.Stop()
-            'MessageBox.Show(Now.ToString)
+            count += 1
+            Console.WriteLine("Build CSV....")
             xTcpIP.BuildCSVData()
+            Console.WriteLine("CSV file has successfully been created")
+            xTcpIP.RemoveLogFile()
+            Console.WriteLine("Build AIS feature class....")
             xTcpIP.CreatingFeatureClass()
+            Console.WriteLine("AIS feature class has successfully been created")
+            geosptialElapsedTime = Now.Subtract(start)
+            Console.WriteLine("Total time: " & geosptialElapsedTime.TotalSeconds.ToString("0.00") & " seconds")
+            Console.WriteLine("---------------------------" & count.ToString & "-times----------------------------")
+            Console.WriteLine("Start time: " & Now.ToString)
         Catch ex As Exception
-            Console.WriteLine(ex.Message)
+            Console.WriteLine("TimerEventProcessor error: " + ex.Message)
         End Try
     End Sub
+
+
+  
 
 End Class

@@ -5,47 +5,73 @@ Imports System.Timers
 
 
 Public Class xTcpIP
-    'Dim proc As New System.Diagnostics.Process()
-    Private PathStr As String
-    Dim clientSocket As New System.Net.Sockets.TcpClient()
-    Dim serverStream As NetworkStream
-    Dim Message = "Read Data From AIS"
-    Dim server = "10.200.76.54"
-    Dim port As Int32 = 31414
-    Dim client As New TcpClient(server, port)
-    Dim data As [Byte]() = System.Text.Encoding.ASCII.GetBytes(Message)
-    Dim stream As NetworkStream = client.GetStream()
+    Private AIS_Log_Path As String
+    Private AIS_Record_Log_Path As String
+    Dim Message As String
+    Dim server As String
+    Dim port As Int32
+    Dim client As TcpClient
+    Dim data As [Byte]()
+    Dim stream As NetworkStream
     Dim stopProcess As Boolean
-    Public Sub New(ByVal _PathStr As String)
+    Public Sub New(ByVal AIS_Path As String)
         ' Initialize with a specific course in mind
-        PathStr = _PathStr
+        AIS_Log_Path = AIS_Path
         stopProcess = False
+        AIS_Record_Log_Path = "C:\AIS_Data\recordLog.log"
+    End Sub
+
+
+    Public Sub OpenConnection()
+        Try
+            Message = "Read Data From AIS"
+            server = "10.200.76.54"
+            port = 31414
+            client = New TcpClient(server, port)
+            data = System.Text.Encoding.ASCII.GetBytes(Message)
+            'stream = NetworkStream
+            stream = client.GetStream()
+        Catch ex As Exception
+            Console.WriteLine("OpenConnection error: " + ex.Message)
+        End Try
+    End Sub
+
+    Public Sub RemoveLogFile()
+        IO.File.Delete(AIS_Log_Path)
     End Sub
 
     Public Sub xConnect()
+        Try
+            'set buffer size. if this buffer is full the process of reading will stop and the app will be hang
+            ' client = New TcpClient(server, port)
+            client.SendBufferSize = 655000000
+            stream.Write(data, 0, data.Length)
+            ' Receive the TcpServer.response.
+            ' Buffer to store the response bytes.
+            data = New [Byte](256) {}
+            ' String to store the response ASCII representation.
+            Dim responseData As [String] = [String].Empty
+            Dim bytes As Int32 = stream.Read(data, 0, data.Length)
+            responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes)
+            'Console.WriteLine("Received: {0}", responseData)
+            WriteToTextFile(responseData, AIS_Log_Path)
+            WriteToTextFile(responseData, AIS_Record_Log_Path)
+        Catch ex As Exception
+            Console.WriteLine("xConnect error: " + ex.Message)
+        End Try
 
-        'set buffer size. if this buffer is full the process of reading will stop and the app will be hang
-        client.SendBufferSize = 655000000
-        stream.Write(data, 0, data.Length)
-        ' Receive the TcpServer.response.
-        ' Buffer to store the response bytes.
-        data = New [Byte](256) {}
-        ' String to store the response ASCII representation.
-        Dim responseData As [String] = [String].Empty
-        Dim bytes As Int32 = stream.Read(data, 0, data.Length)
-        responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes)
-        ' Console.WriteLine("Received: {0}", responseData)
-        WriteToTextFile(responseData)
+       
 
     End Sub 'Connect
 
-    Public Sub WriteToTextFile(ByRef AisString)
+    Public Sub WriteToTextFile(ByRef AisString As String, ByVal filePath As String)
         Try
-            Using writer As StreamWriter = New StreamWriter(PathStr, True)
+            Using writer As StreamWriter = New StreamWriter(filePath, True)
                 writer.WriteLine(AisString)
             End Using
+
         Catch ex As Exception
-            Console.Write("File doesn't exist")
+            Console.WriteLine("WriteToTextFile error: " + ex.Message)
         End Try
     End Sub
 
@@ -57,13 +83,12 @@ Public Class xTcpIP
             Dim CSVProcess As New System.Diagnostics.Process()
             CSVProcess = Process.Start("C:\AIS_Miner\AISMiner.exe", "-i C:\AIS_Data\ais_live_data.log -o C:\AIS_Data\ais_live.csv -m 0")
             CSVProcess.WaitForExit()
-            Console.WriteLine("CSV file has successfully been created")
+            'Console.WriteLine("CSV file has successfully been created")
         Catch ex As Exception
-            Console.WriteLine(ex.Message)
+            Console.WriteLine("BuildCSVData error: " + ex.Message)
         End Try
     End Sub
 
-  
     Public Sub CreatingFeatureClass()
         Try
 
@@ -80,23 +105,50 @@ Public Class xTcpIP
             ' read all the output
             ' here we could just read line by line and display it
             ' in an output window 
-            ' Dim output As String = ArcPyProc.StandardOutput.ReadToEnd
+            'Dim output As String = ArcPyProc.StandardOutput.ReadToEnd
             'Console.WriteLine(output)
             ' wait for the process to terminate 
             ArcPyProc.WaitForExit()
-            Console.WriteLine("AIS feature class has successfully been created")
             If stopProcess = True Then
-                MessageBox.Show("Done!!")
-            Else
-                Console.WriteLine("Start another time: " & Now.ToString)
+                ' MessageBox.Show("AIS data has been created!")
             End If
 
         Catch ex As Exception
-            Console.WriteLine(ex.Message)
+            Console.WriteLine("CreatingFeatureClass error: " + ex.Message)
         End Try
 
 
     End Sub
+
+    Public Sub PublishingAISWebServices()
+        Try
+
+            Dim ArcPyProc As New System.Diagnostics.Process()
+            ' this is the name of the process we want to execute 
+            ArcPyProc.StartInfo.FileName = "C:\Python27\ArcGIS10.3\python.exe"
+            ArcPyProc.StartInfo.Arguments = "C:\AIS_Py\PublishMapModule.py"
+            ' need to set this to false to redirect output
+            ArcPyProc.StartInfo.UseShellExecute = False
+            ArcPyProc.StartInfo.RedirectStandardOutput = True
+            ArcPyProc.StartInfo.CreateNoWindow = True
+            ' start the process 
+            ArcPyProc.Start()
+            ' read all the output
+            ' here we could just read line by line and display it
+            ' in an output window 
+            Dim output As String = ArcPyProc.StandardOutput.ReadToEnd()
+
+            Console.WriteLine(output)
+            ' wait for the process to terminate 
+            ArcPyProc.WaitForExit()
+
+        Catch ex As Exception
+            Console.WriteLine("PublishingAISWebServices error: " + ex.Message)
+        End Try
+
+
+    End Sub
+
 
     Public Sub CloseConnection()
         Try
@@ -107,17 +159,6 @@ Public Class xTcpIP
         End Try
     End Sub
 
-    Public Sub OpenConnection()
-        Try
-            client = New TcpClient(server, port)
-            data = System.Text.Encoding.ASCII.GetBytes(Message)
-            stream = client.GetStream()
-        Catch ex As Exception
-            Console.WriteLine(ex.Message)
-        End Try
-    End Sub
-
-
     Public Sub getProcessStatus(ByVal _stopProcess As Boolean)
         Try
             stopProcess = _stopProcess
@@ -125,6 +166,7 @@ Public Class xTcpIP
             Console.WriteLine(ex.Message)
         End Try
     End Sub
+
     Public Sub DeleteFile()
         Dim x As Integer
         Dim paths() As String = IO.Directory.GetFiles("C:\AIS_Data\", "ais_live.csv")
@@ -136,3 +178,5 @@ Public Class xTcpIP
     End Sub
 
 End Class
+
+

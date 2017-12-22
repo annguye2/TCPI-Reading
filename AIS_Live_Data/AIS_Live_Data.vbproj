@@ -79,6 +79,8 @@
       <DependentUpon>AIS_Live_Data.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="RichTextBoxWriter.vb" />
+    <Compile Include="TcpIP_Backup.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
