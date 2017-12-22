@@ -106,9 +106,9 @@ Public Class AIS_Live_Data
                 BackgroundWorker1.ReportProgress(100, "Completed.")
                 xTcpIP.CloseConnection()
     
-                Console.WriteLine("Start publishing AIS Webservices.  Please wait....")
-                xTcpIP.PublishingAISWebServices()
-                Console.WriteLine("AIS Webservices has successfully been published!")
+                'Console.WriteLine("Start publishing AIS Webservices.  Please wait....")
+                'xTcpIP.PublishingAISWebServices()
+                'Console.WriteLine("AIS Webservices has successfully been published!")
  
                 MessageBox.Show("Completed!")
                 Exit For
@@ -233,6 +233,9 @@ Public Class AIS_Live_Data
             Console.WriteLine("Build AIS feature class....")
             xTcpIP.CreatingFeatureClass()
             Console.WriteLine("AIS feature class has successfully been created")
+            Console.WriteLine("Publish AIS to ArcGIS Server")
+            xTcpIP.PublishingAISWebServices()
+            Console.WriteLine("Successfull published AIS to ArcGIS Server")
             geosptialElapsedTime = Now.Subtract(start)
             Console.WriteLine("Total time: " & geosptialElapsedTime.TotalSeconds.ToString("0.00") & " seconds")
             Console.WriteLine("---------------------------" & count.ToString & "-times----------------------------")
