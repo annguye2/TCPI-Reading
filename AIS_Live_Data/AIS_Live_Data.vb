@@ -110,7 +110,7 @@ Public Class AIS_Live_Data
                 xTcpIP.PublishingAISWebServices()
                 Console.WriteLine("AIS Webservices has successfully been published!")
  
-                MessageBox.Show("Done")
+                MessageBox.Show("Completed!")
                 Exit For
             Else
             End If
